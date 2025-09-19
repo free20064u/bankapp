@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="jumbotron">
+    <h1 class="display-4">Welcome to the Bank App</h1>
+    {% if user.is_authenticated %}
+      <p class="lead">Hello, {{ user.username }}!</p>
+    {% else %}
+      <p class="lead">Please <a href="{% url 'login' %}">login</a> or <a href="{% url 'register' %}">register</a>.</p>
+    {% endif %}
+  </div>
+{% endblock %}
