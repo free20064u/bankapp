@@ -1,131 +1,82 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Bank App</title>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#"
-          ><i class="fas fa-university me-2"></i>Bank App</a
-        >
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'home' %}"
-                ><i class="fas fa-home me-1"></i> Home</a
-              >
-            </li>
-            {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'dashboard' %}"
-                ><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:profile' %}"
-                ><i class="fas fa-user-circle me-1"></i> Profile</a
-              >
-            </li>
-            <li class="nav-item">
-              {% if user.customer.profile_picture %}
-              <img
-                src="{{ user.customer.profile_picture.url }}"
-                alt="Profile"
-                class="rounded-circle"
-                style="
-                  width: 30px;
-                  height: 30px;
-                  object-fit: cover;
-                  margin-left: 10px;
-                "
-              />
-              {% else %}
-              <img
-                src="{% static 'images/default_profile.png' %}"
-                alt="Profile"
-                class="rounded-circle"
-                style="
-                  width: 30px;
-                  height: 30px;
-                  object-fit: cover;
-                  margin-left: 10px;
-                "
-              />
-              {% endif %}
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:logout' %}"
-                ><i class="fas fa-sign-out-alt me-1"></i> Logout</a
-              >
-            </li>
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:login' %}"
-                ><i class="fas fa-sign-in-alt me-1"></i> Login</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:register' %}"
-                ><i class="fas fa-user-plus me-1"></i> Register</a
-              >
-            </li>
-            {% endif %}
-          </ul>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}"><i class="fas fa-university me-2"></i>Bank App</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:profile' %}"><i class="fas fa-user-circle me-1"></i> Profile</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% if user.customer.profile_picture %}
+                                    <img src="{{ user.customer.profile_picture.url }}" alt="Profile" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{% static 'images/default_profile.png' %}" alt="Profile" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt me-1"></i>Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:login' %}"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:register' %}"><i class="fas fa-user-plus me-1"></i> Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
-      </div>
     </nav>
-    <div class="container mt-3">
-      {% if messages %} {% for message in messages %}
-      <div
-        class="alert alert-{{ message.tags }} alert-dismissible fade show"
-        role="alert"
-      >
-        {{ message }}
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="alert"
-          aria-label="Close"
-        ></button>
-      </div>
-      {% endfor %} {% endif %}
+
+    <div class="container mt-4">
+        {% if messages %}
+            <div id="messages-area">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
-    <div
-      class="container d-flex justify-content-center align-items-center mt-5"
-    >
-      <div class="col-md-6">{% block content %} {% endblock %}</div>
-    </div>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
+
+    <main class="container py-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const alerts = document.querySelectorAll(".alert");
-        alerts.forEach(function (alert) {
-          setTimeout(function () {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-          }, 2000);
+        document.addEventListener("DOMContentLoaded", function () {
+            const messageAlerts = document.querySelectorAll(".alert-dismissible");
+            messageAlerts.forEach(function (alert) {
+                setTimeout(function () {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000); // Close after 5 seconds
+            });
         });
-      });
     </script>
-  </body>
+</body>
 </html>

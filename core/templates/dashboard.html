@@ -1,117 +1,78 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-10">
-    <h2 class="mb-4">Welcome, {{ user.username }}!</h2>
-
+<div class="container py-5">
     <div class="row">
-      <div class="col-md-6 mb-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <h5 class="card-title">
-              <i class="fas fa-wallet text-primary me-2"></i>Total Balance
-            </h5>
-            <p class="card-text display-4">
-              {{ total_balance|floatformat:2 }} EUR
-            </p>
-            <p class="card-text text-muted">
-              Across {{ accounts|length }} account(s)
-            </p>
-          </div>
+        <div class="col-12 text-center mb-4">
+            <h1 class="display-4">Welcome, {{ user.username }}!</h1>
+            <p class="lead text-muted">This is your financial dashboard.</p>
         </div>
-      </div>
-      <div class="col-md-6 mb-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <h5 class="card-title">
-              <i class="fas fa-user text-success me-2"></i>Your Profile
-            </h5>
-            <div class="d-flex align-items-center mb-3">
-              {% if customer.profile_picture %}
-              <img
-                src="{{ customer.profile_picture.url }}"
-                alt="Profile"
-                class="rounded-circle me-3"
-                style="width: 60px; height: 60px; object-fit: cover"
-              />
-              {% else %}
-              <img
-                src="{% static 'images/default_profile.png' %}"
-                alt="Profile"
-                class="rounded-circle me-3"
-                style="width: 60px; height: 60px; object-fit: cover"
-              />
-              {% endif %}
-              <div>
-                <h6 class="mb-0">{{ customer.user.username }}</h6>
-                <small class="text-muted">{{ customer.user.email }}</small>
-              </div>
-            </div>
-            <a
-              href="{% url 'accounts:profile' %}"
-              class="btn btn-outline-primary btn-sm"
-              ><i class="fas fa-user-circle"></i> View Profile</a
-            >
-            <a
-              href="{% url 'accounts:edit_profile' %}"
-              class="btn btn-outline-secondary btn-sm ms-2"
-              ><i class="fas fa-edit"></i> Edit Profile</a
-            >
-          </div>
-        </div>
-      </div>
     </div>
 
-    <div class="card shadow-sm mt-4">
-      <div class="card-body">
-        <h5 class="card-title mb-3">Recent Transactions</h5>
-        {% if recent_transactions %}
-        <ul class="list-group list-group-flush">
-          {% for transaction in recent_transactions %}
-          <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-          >
-            <div>
-              <strong
-                ><i class="fas fa-exchange-alt text-info me-1"></i> {{
-                transaction.description }}</strong
-              ><br />
-              <small class="text-muted"
-                ><i class="fas fa-clock me-1"></i> {{
-                transaction.timestamp|date:"M d, Y H:i" }}</small
-              >
+    <div class="row justify-content-center">
+        <!-- Total Balance -->
+        <div class="col-md-6 col-lg-5 mb-4">
+            <div class="card text-center shadow-lg border-0 h-100">
+                <div class="card-body">
+                    <i class="fas fa-wallet fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Total Balance</h5>
+                    <p class="card-text display-4">{{ total_balance|floatformat:2 }} EUR</p>
+                    <p class="card-text text-muted">Across {{ accounts|length }} account(s)</p>
+                </div>
             </div>
-            <span
-              class="fw-bold {% if transaction.amount < 0 %}text-danger{% else %}text-success{% endif %}"
-            >
-              {{ transaction.amount }} {{ transaction.account.currency.code }}
-            </span>
-          </li>
-          {% endfor %}
-        </ul>
-        <div class="text-center mt-3">
-          <a
-            href="{% url 'accounts:profile' %}#accounts-section"
-            class="btn btn-outline-info btn-sm"
-            ><i class="fas fa-list"></i> View All Accounts & Transactions</a
-          >
         </div>
-        {% else %}
-        <p class="text-muted">No recent transactions.</p>
-        {% endif %}
-      </div>
+
+        <!-- User Profile -->
+        <div class="col-md-6 col-lg-5 mb-4">
+            <div class="card text-center shadow-lg border-0 h-100">
+                <div class="card-body">
+                    {% if customer.profile_picture %}
+                        <img src="{{ customer.profile_picture.url }}" alt="Profile" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'images/default_profile.png' %}" alt="Profile" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                    {% endif %}
+                    <h5 class="card-title">{{ customer.user.username }}</h5>
+                    <p class="text-muted">{{ customer.user.email }}</p>
+                    <a href="{% url 'accounts:profile' %}" class="btn btn-primary"><i class="fas fa-user-circle me-2"></i>View Profile</a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="card shadow-sm mt-4">
-      <div class="card-body text-center">
-        <h5 class="card-title mb-3">Quick Actions</h5>
-        <a href="{% url 'make_transaction' %}" class="btn btn-primary me-2"
-          ><i class="fas fa-paper-plane"></i> Make a Transaction</a
-        >
-        <a href="{% url 'create_account' %}" class="btn btn-success"
-          ><i class="fas fa-plus-circle"></i> Open New Account</a
-        >
-      </div>
+    <!-- Recent Transactions -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">Recent Transactions</h4>
+                </div>
+                <div class="card-body">
+                    {% if recent_transactions %}
+                        <ul class="list-group list-group-flush">
+                            {% for transaction in recent_transactions %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="mb-1">{{ transaction.description }}</p>
+                                        <small class="text-muted">{{ transaction.timestamp|date:"M d, Y H:i" }}</small>
+                                    </div>
+                                    <span class="fw-bold {% if transaction.amount < 0 %}text-danger{% else %}text-success{% endif %}">
+                                        {{ transaction.amount|floatformat:2 }} {{ transaction.account.currency.code }}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No recent transactions.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <!-- Quick Actions -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-10 text-center">
+            <a href="{% url 'make_transaction' %}" class="btn btn-primary btn-lg me-2"><i class="fas fa-paper-plane me-2"></i>Make a Transaction</a>
+            <a href="{% url 'create_account' %}" class="btn btn-success btn-lg"><i class="fas fa-plus-circle me-2"></i>Open New Account</a>
+        </div>
+    </div>
 </div>
 {% endblock %}

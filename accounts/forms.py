@@ -1,5 +1,11 @@
 from django import forms
-from core.models import Customer # Import Customer from core
+from django.contrib.auth.models import User
+from core.models import Customer
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
 
 class CustomerForm(forms.ModelForm):
     class Meta:
@@ -8,9 +14,5 @@ class CustomerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Add Bootstrap form-control class to fields
         for field_name, field in self.fields.items():
-            if isinstance(field.widget, (forms.TextInput, forms.NumberInput, forms.Textarea, forms.Select)):
-                field.widget.attrs['class'] = 'form-control'
-            elif isinstance(field.widget, forms.ClearableFileInput):
-                field.widget.attrs['class'] = 'form-control-file'
+            field.widget.attrs['class'] = 'form-control'

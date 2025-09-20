@@ -1,20 +1,19 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from core.models import Customer, Account # Import Customer and Account from core
-from .forms import CustomerForm # Import CustomerForm from accounts.forms
+from core.models import Customer
+from .forms import UserForm, CustomerForm
 
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Create a customer profile
             Customer.objects.create(user=user)
             login(request, user)
-            return redirect('dashboard') # Redirect to dashboard after registration
+            return redirect('dashboard')
     else:
         form = UserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
@@ -25,7 +24,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('dashboard') # Redirect to dashboard after login
+            return redirect('dashboard')
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
@@ -33,25 +32,29 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, "You have been logged out.")
-    return redirect('home') # Redirect to home after logout
+    return redirect('home')
 
 @login_required
 def profile(request):
-    customer, created = Customer.objects.get_or_create(user=request.user)
-    # accounts = customer.account_set.all() # Accounts are handled in core app
-    return render(request, 'accounts/profile.html', {'customer': customer}) # Removed accounts from context
+    customer = request.user.customer
+    return render(request, 'accounts/profile.html', {'customer': customer})
 
 @login_required
 def edit_profile(request):
-    customer = request.user.customer
     if request.method == 'POST':
-        form = CustomerForm(request.POST, request.FILES, instance=customer)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Profile updated successfully!")
-            return redirect('accounts:profile') # Redirect to accounts:profile
+        user_form = UserForm(request.POST, instance=request.user)
+        customer_form = CustomerForm(request.POST, request.FILES, instance=request.user.customer)
+        if user_form.is_valid() and customer_form.is_valid():
+            user_form.save()
+            customer_form.save()
+            messages.success(request, 'Your profile was successfully updated!')
+            return redirect('accounts:profile')
         else:
-            messages.error(request, "Error updating profile. Please check the form.")
+            messages.error(request, 'Please correct the error below.')
     else:
-        form = CustomerForm(instance=customer)
-    return render(request, 'accounts/edit_profile.html', {'form': form})
+        user_form = UserForm(instance=request.user)
+        customer_form = CustomerForm(instance=request.user.customer)
+    return render(request, 'accounts/edit_profile.html', {
+        'user_form': user_form,
+        'customer_form': customer_form
+    })
