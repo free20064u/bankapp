@@ -91,3 +91,6 @@ def make_transaction(request):
     else:
         form = TransactionForm(user=request.user) # Pass user to form
     return render(request, 'make_transaction.html', {'form': form})
+
+def about(request):
+    return render(request, 'about.html')
