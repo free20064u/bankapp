@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Make Transaction</h2>
+  <h2 class="mb-4 text-primary"><i class="fas fa-paper-plane me-2"></i>Make Transaction</h2>
   <form method="post">
     {% csrf_token %}
     {% for field in form %}
@@ -16,7 +16,7 @@
         {% endfor %}
       </div>
     {% endfor %}
-    <button type="submit" class="btn btn-primary">Submit Transaction</button>
+  <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle me-1"></i> Submit Transaction</button>
   </form>
 
   <script>
