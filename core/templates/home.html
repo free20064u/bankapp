@@ -1,12 +1,30 @@
-{% extends 'base.html' %}
-
-{% block content %}
-  <div class="jumbotron">
-    <h1 class="display-4">Welcome to the Bank App</h1>
-    {% if user.is_authenticated %}
-      <p class="lead">Hello, {{ user.username }}!</p>
-    {% else %}
-      <p class="lead">Please <a href="{% url 'login' %}">login</a> or <a href="{% url 'register' %}">register</a>.</p>
-    {% endif %}
-  </div>
+{% extends 'base.html' %} {% block content %}
+<div class="jumbotron text-center">
+  <h1 class="display-4 mb-3">
+    <i class="fas fa-university text-primary me-2"></i>Welcome to the
+    <span style="color: #0056b3">Bank App</span>
+  </h1>
+  {% if user.is_authenticated %}
+  <p class="lead">
+    <i class="fas fa-user-circle text-success me-1"></i> Hello,
+    <span class="fw-bold">{{ user.username }}</span>!
+  </p>
+  {% else %}
+  <p class="lead">
+    <i class="fas fa-sign-in-alt text-info me-1"></i>
+    Please
+    <a
+      href="{% url 'accounts:login' %}"
+      class="btn btn-outline-primary btn-sm mx-1"
+      ><i class="fas fa-sign-in-alt"></i> Login</a
+    >
+    or
+    <a
+      href="{% url 'accounts:register' %}"
+      class="btn btn-outline-success btn-sm mx-1"
+      ><i class="fas fa-user-plus"></i> Register</a
+    >.
+  </p>
+  {% endif %}
+</div>
 {% endblock %}
