@@ -26,6 +26,22 @@ class Account(models.Model):
     def __str__(self):
         return self.account_number
 
+    def deposit(self, amount, description="Deposit"):
+        if amount <= 0:
+            raise ValueError("Deposit amount must be positive.")
+        self.balance += amount
+        self.save()
+        Transaction.objects.create(account=self, amount=amount, description=description)
+
+    def withdraw(self, amount, description="Withdrawal"):
+        if amount <= 0:
+            raise ValueError("Withdrawal amount must be positive.")
+        if self.balance < amount:
+            raise ValueError("Insufficient funds.")
+        self.balance -= amount
+        self.save()
+        Transaction.objects.create(account=self, amount=-amount, description=description)
+
 class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)

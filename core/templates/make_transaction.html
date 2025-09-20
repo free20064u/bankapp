@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Make Transaction</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="mb-3" {% if field.name == 'recipient_account' %}id="recipient-account-field" style="display: none;"{% endif %}>
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <div class="form-text">{{ field.help_text }}</div>
+        {% endif %}
+        {% for error in field.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Submit Transaction</button>
+  </form>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const transactionTypeSelect = document.getElementById('id_transaction_type');
+      const recipientAccountField = document.getElementById('recipient-account-field');
+
+      function toggleRecipientAccountField() {
+        if (transactionTypeSelect.value === 'transfer') {
+          recipientAccountField.style.display = 'block';
+        } else {
+          recipientAccountField.style.display = 'none';
+        }
+      }
+
+      // Initial state
+      toggleRecipientAccountField();
+
+      // Listen for changes
+      transactionTypeSelect.addEventListener('change', toggleRecipientAccountField);
+    });
+  </script>
+{% endblock %}

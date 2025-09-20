@@ -4,6 +4,7 @@
 <head>
   <title>Bank App</title>
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'fontawsome/css/all.min.css' %}">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -19,23 +20,43 @@
           </li>
           {% if user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+              <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+              <a class="nav-link" href="{% url 'accounts:profile' %}">Profile</a>
+            </li>
+            <li class="nav-item">
+              {% if user.customer.profile_picture %}
+                <img src="{{ user.customer.profile_picture.url }}" alt="Profile" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-left: 10px;">
+              {% else %}
+                <img src="{% static 'images/default_profile.png' %}" alt="Profile" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-left: 10px;">
+              {% endif %}
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
             </li>
           {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Login</a>
+              <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'register' %}">Register</a>
+              <a class="nav-link" href="{% url 'accounts:register' %}">Register</a>
             </li>
           {% endif %}
         </ul>
       </div>
     </div>
   </nav>
+  <div class="container mt-3">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
   <div class="container d-flex justify-content-center align-items-center mt-5">
     <div class="col-md-6">
       {% block content %}
@@ -43,5 +64,16 @@
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          const bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        }, 2000);
+      });
+    });
+  </script>
 </body>
 </html>
